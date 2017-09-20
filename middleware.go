@@ -60,8 +60,8 @@ The mchain.Handler returned by the given middleware must be safe for concurrent
 use by multiple goroutines. It is not safe to concurrently register middleware
 from multiple goroutines, or to register middleware concurrently with requests.
 */
-func (m *Mux) Use(middleware mchain.Middleware) {
-	m.middleware = append(m.middleware, middleware)
+func (m *Mux) Use(middleware ...mchain.Middleware) {
+	m.middleware = append(m.middleware, middleware...)
 	m.buildChain()
 }
 
