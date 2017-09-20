@@ -1,21 +1,25 @@
-// +build goji_router_simple
+// +build mroute_router_simple
 
-package goji
+package mroute
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/prasannavl/mchain"
+)
 
 /*
-This is the simplest correct router implementation for Goji.
+This is the simplest correct router implementation for mroute.
 */
 
 type router []route
 
 type route struct {
 	Pattern
-	http.Handler
+	mchain.Handler
 }
 
-func (rt *router) add(p Pattern, h http.Handler) {
+func (rt *router) add(p Pattern, h mchain.Handler) {
 	*rt = append(*rt, route{p, h})
 }
 

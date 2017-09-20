@@ -1,13 +1,13 @@
 /*
-Package pattern contains utilities for Goji Pattern authors.
+Package pattern contains utilities for mroute Pattern authors.
 
-Goji users should not import this package. Instead, use the utilities provided
+mroute users should not import this package. Instead, use the utilities provided
 by your Pattern package. If you are looking for an implementation of Pattern,
-try Goji's pat subpackage, which contains a simple domain specific language for
+try mroute's pat subpackage, which contains a simple domain specific language for
 specifying routes.
 
 For Pattern authors, use of this subpackage is entirely optional. Nevertheless,
-authors who wish to take advantage of Goji's PathPrefix optimization or who wish
+authors who wish to take advantage of mroute's PathPrefix optimization or who wish
 to standardize on a few common interfaces may find this package useful.
 */
 package pattern
@@ -15,7 +15,7 @@ package pattern
 import (
 	"context"
 
-	"goji.io/internal"
+	"github.com/prasannavl/mroute/internal"
 )
 
 /*
@@ -40,9 +40,9 @@ instead of an empty map.
 var AllVariables = allVariables{}
 
 /*
-Path returns the path that the Goji router uses to perform the PathPrefix
+Path returns the path that the mroute router uses to perform the PathPrefix
 optimization. While this function does not distinguish between the absence of a
-path and an empty path, Goji will automatically extract a path from the request
+path and an empty path, mroute will automatically extract a path from the request
 if none is present.
 
 By convention, paths are stored in their escaped form (i.e., the value returned
@@ -58,7 +58,7 @@ func Path(ctx context.Context) string {
 }
 
 /*
-SetPath returns a new context in which the given path is used by the Goji Router
+SetPath returns a new context in which the given path is used by the mroute Router
 when performing the PathPrefix optimization. See Path for more information about
 the intended semantics of this path.
 */

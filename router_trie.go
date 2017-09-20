@@ -1,13 +1,15 @@
-// +build !goji_router_simple
+// +build !mroute_router_simple
 
-package goji
+package mroute
 
 import (
 	"net/http"
 	"sort"
 	"strings"
 
-	"goji.io/internal"
+	"github.com/prasannavl/mroute/internal"
+
+	"github.com/prasannavl/mchain"
 )
 
 type router struct {
@@ -18,7 +20,7 @@ type router struct {
 
 type route struct {
 	Pattern
-	http.Handler
+	mchain.Handler
 }
 
 type child struct {
@@ -31,7 +33,7 @@ type trieNode struct {
 	children []child
 }
 
-func (rt *router) add(p Pattern, h http.Handler) {
+func (rt *router) add(p Pattern, h mchain.Handler) {
 	i := len(rt.routes)
 	rt.routes = append(rt.routes, route{p, h})
 

@@ -4,8 +4,8 @@ import (
 	"context"
 	"sort"
 
-	"goji.io/internal"
-	"goji.io/pattern"
+	"github.com/prasannavl/mroute/internal"
+	"github.com/prasannavl/mroute/pattern"
 )
 
 type match struct {

@@ -1,10 +1,12 @@
-package goji
+package mroute
 
 import (
 	"context"
 	"net/http"
 
-	"goji.io/internal"
+	"github.com/prasannavl/mchain"
+
+	"github.com/prasannavl/mroute/internal"
 )
 
 /*
@@ -21,15 +23,13 @@ Muxes cannot be configured concurrently from multiple goroutines, nor can they
 be configured concurrently with requests.
 */
 type Mux struct {
-	handler    http.Handler
-	middleware []func(http.Handler) http.Handler
+	handler    mchain.Handler
+	middleware []mchain.Middleware
 	router     router
 	root       bool
 }
 
-/*
-NewMux returns a new Mux with no configured middleware or routes.
-*/
+// NewMux returns a new Mux with no configured middleware or routes.
 func NewMux() *Mux {
 	m := SubMux()
 	m.root = true
@@ -64,14 +64,12 @@ func SubMux() *Mux {
 }
 
 // ServeHTTP implements net/http.Handler.
-func (m *Mux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (m *Mux) ServeHTTP(w http.ResponseWriter, r *http.Request) error {
 	if m.root {
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, internal.Path, r.URL.EscapedPath())
 		r = r.WithContext(ctx)
 	}
 	r = m.router.route(r)
-	m.handler.ServeHTTP(w, r)
+	return m.handler.ServeHTTP(w, r)
 }
-
-var _ http.Handler = &Mux{}

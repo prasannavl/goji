@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"goji.io/pattern"
+	"github.com/prasannavl/mroute/pattern"
 )
 
 func TestExistingContext(t *testing.T) {

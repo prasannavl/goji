@@ -1,19 +1,21 @@
-package goji
+package mroute
 
 import (
 	"net/http"
 
-	"goji.io/internal"
+	"github.com/prasannavl/goerror/httperror"
+
+	"github.com/prasannavl/mchain"
+	"github.com/prasannavl/mroute/internal"
 )
 
 type dispatch struct{}
 
-func (d dispatch) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (d dispatch) ServeHTTP(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 	h := ctx.Value(internal.Handler)
 	if h == nil {
-		http.NotFound(w, r)
-	} else {
-		h.(http.Handler).ServeHTTP(w, r)
+		return httperror.New(http.StatusNotFound, "route not found", false)
 	}
+	return h.(mchain.Handler).ServeHTTP(w, r)
 }

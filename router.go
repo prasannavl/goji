@@ -1,16 +1,16 @@
-package goji
+package mroute
 
 import (
 	"context"
-	"net/http"
 
-	"goji.io/internal"
+	"github.com/prasannavl/mchain"
+	"github.com/prasannavl/mroute/internal"
 )
 
 type match struct {
 	context.Context
 	p Pattern
-	h http.Handler
+	h mchain.Handler
 }
 
 func (m match) Value(key interface{}) interface{} {

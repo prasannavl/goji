@@ -1,11 +1,11 @@
-package goji
+package mroute
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
 
-	"goji.io/internal"
+	"github.com/prasannavl/mroute/internal"
 )
 
 type boolPattern bool
@@ -58,7 +58,8 @@ func (t testPattern) HTTPMethods() map[string]struct{} {
 
 type intHandler int
 
-func (i intHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (i intHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) error {
+	return nil
 }
 
 func wr() (*httptest.ResponseRecorder, *http.Request) {

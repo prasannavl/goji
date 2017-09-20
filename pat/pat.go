@@ -1,5 +1,5 @@
 /*
-Package pat is a URL-matching domain-specific language for Goji.
+Package pat is a URL-matching domain-specific language for mroute.
 
 
 Quick Reference
@@ -86,7 +86,7 @@ import (
 	"sort"
 	"strings"
 
-	"goji.io/pattern"
+	"github.com/prasannavl/mroute/pattern"
 )
 
 type patNames []struct {
@@ -105,7 +105,7 @@ func (p patNames) Swap(i, j int) {
 }
 
 /*
-Pattern implements goji.Pattern using a path-matching domain specific language.
+Pattern implements mroute.Pattern using a path-matching domain specific language.
 See the package documentation for more information about the semantics of this
 object.
 */
@@ -186,7 +186,7 @@ func newWithMethods(pat string, methods ...string) *Pattern {
 Match runs the Pat pattern on the given request, returning a non-nil output
 request if the input request matches the pattern.
 
-This function satisfies goji.Pattern.
+This function satisfies mroute.Pattern.
 */
 func (p *Pattern) Match(r *http.Request) *http.Request {
 	if p.methods != nil {
@@ -258,7 +258,7 @@ func (p *Pattern) Match(r *http.Request) *http.Request {
 PathPrefix returns a string prefix that the Paths of all requests that this
 Pattern accepts must contain.
 
-This function satisfies goji's PathPrefix Pattern optimization.
+This function satisfies mroute's PathPrefix Pattern optimization.
 */
 func (p *Pattern) PathPrefix() string {
 	return p.literals[0]
@@ -269,7 +269,7 @@ HTTPMethods returns a set of HTTP methods that all requests that this
 Pattern matches must be in, or nil if it's not possible to determine
 which HTTP methods might be matched.
 
-This function satisfies goji's HTTPMethods Pattern optimization.
+This function satisfies mroute's HTTPMethods Pattern optimization.
 */
 func (p *Pattern) HTTPMethods() map[string]struct{} {
 	return p.methods

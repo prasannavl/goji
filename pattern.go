@@ -1,4 +1,4 @@
-package goji
+package mroute
 
 // httpMethods is an internal interface for the HTTPMethods pattern
 // optimization. See the documentation on Pattern for more.

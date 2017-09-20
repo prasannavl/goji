@@ -1,4 +1,4 @@
-package goji
+package mroute
 
 import (
 	"context"
@@ -6,16 +6,18 @@ import (
 	"reflect"
 	"testing"
 
-	"goji.io/internal"
-	"goji.io/pattern"
+	"github.com/prasannavl/mchain"
+	"github.com/prasannavl/mroute/internal"
+	"github.com/prasannavl/mroute/pattern"
 )
 
 func TestNoMatch(t *testing.T) {
 	t.Parallel()
 
 	var rt router
-	rt.add(boolPattern(false), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	rt.add(boolPattern(false), mchain.HandlerFunc(func(w http.ResponseWriter, r *http.Request) error {
 		t.Fatal("did not expect handler to be called")
+		return nil
 	}))
 	_, r := wr()
 	ctx := context.Background()
@@ -40,11 +42,11 @@ func TestNoMatch(t *testing.T) {
 }
 
 /*
-These are meant to be end-to-end torture tests of Goji's routing semantics. We
+These are meant to be end-to-end torture tests of mroute's routing semantics. We
 generate a list of patterns that can be turned off incrementally with a global
 "high water mark." We then run a sequence of requests through the router N
 times, incrementing the mark each time. The net effect is that we can compile
-the entire set of routes Goji would attempt for every request, ensuring that the
+the entire set of routes mroute would attempt for every request, ensuring that the
 router is picking routes in the correct order.
 */
 

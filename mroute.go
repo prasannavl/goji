@@ -1,24 +1,24 @@
 /*
-Package goji is a minimalistic and flexible HTTP request multiplexer.
+Package mroute is a minimalistic and flexible HTTP request multiplexer.
 
-Goji itself has very few features: it is first and foremost a standard set of
+mroute itself has very few features: it is first and foremost a standard set of
 interfaces for writing web applications. Several subpackages are distributed
-with Goji to provide standard production-ready implementations of several of the
+with mroute to provide standard production-ready implementations of several of the
 interfaces, however users are also encouraged to implement the interfaces on
 their own, especially if their needs are unusual.
 */
-package goji
+package mroute
 
 import "net/http"
 
 /*
-Pattern determines whether a given request matches some criteria. Goji users
+Pattern determines whether a given request matches some criteria. mroute users
 looking for a concrete type that implements this interface should consider
-Goji's "pat" sub-package, which implements a small domain specific language for
+mroute's "pat" sub-package, which implements a small domain specific language for
 HTTP routing.
 
 Patterns typically only examine a small portion of incoming requests, most
-commonly the HTTP method and the URL's RawPath. As an optimization, Goji can
+commonly the HTTP method and the URL's RawPath. As an optimization, mroute can
 elide calls to your Pattern for requests it knows cannot match. Pattern authors
 who wish to take advantage of this functionality (and in some cases an
 asymptotic performance improvement) can augment their Pattern implementations
@@ -37,7 +37,7 @@ with any of the following methods:
 	PathPrefix() string
 
 The presence or lack of these performance improvements should be viewed as an
-implementation detail and are not part of Goji's API compatibility guarantee. It
+implementation detail and are not part of mroute's API compatibility guarantee. It
 is the responsibility of Pattern authors to ensure that their Match function
 always returns correct results, even if these optimizations are not performed.
 

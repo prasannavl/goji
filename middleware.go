@@ -1,6 +1,6 @@
-package goji
+package mroute
 
-import "net/http"
+import "github.com/prasannavl/mchain"
 
 /*
 Use appends a middleware to the Mux's middleware stack.
@@ -13,7 +13,7 @@ Middleware are evaluated in the reverse order in which they were added, but the
 resulting http.Handlers execute in "normal" order (i.e., the http.Handler
 returned by the first Middleware to be added gets called first).
 
-For instance, given middleware A, B, and C, added in that order, Goji will
+For instance, given middleware A, B, and C, added in that order, mroute will
 behave similarly to this snippet:
 
 	augmentedHandler := A(B(C(yourHandler)))
@@ -49,7 +49,7 @@ Note that augmentedHandler will called many times, producing the log output
 below the divider, while the outer middleware functions (the log output above
 the divider) will only be called a handful of times at application boot.
 
-Middleware in Goji is called after routing has been performed. Therefore it is
+Middleware in mroute is called after routing has been performed. Therefore it is
 possible to examine any routing information placed into the Request context by
 Patterns, or to view or modify the http.Handler that will be routed to.
 Middleware authors should read the documentation for the "middleware" subpackage
@@ -59,7 +59,7 @@ The http.Handler returned by the given middleware must be safe for concurrent
 use by multiple goroutines. It is not safe to concurrently register middleware
 from multiple goroutines, or to register middleware concurrently with requests.
 */
-func (m *Mux) Use(middleware func(http.Handler) http.Handler) {
+func (m *Mux) Use(middleware mchain.Middleware) {
 	m.middleware = append(m.middleware, middleware)
 	m.buildChain()
 }

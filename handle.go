@@ -1,13 +1,17 @@
-package goji
+package mroute
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/prasannavl/mchain"
+)
 
 /*
 Handle adds a new route to the Mux. Requests that match the given Pattern will
 be dispatched to the given http.Handler.
 
 Routing is performed in the order in which routes are added: the first route
-with a matching Pattern will be used. In particular, Goji guarantees that
+with a matching Pattern will be used. In particular, mroute guarantees that
 routing is performed in a manner that is indistinguishable from the following
 algorithm:
 
@@ -24,7 +28,7 @@ algorithm:
 It is not safe to concurrently register routes from multiple goroutines, or to
 register routes concurrently with requests.
 */
-func (m *Mux) Handle(p Pattern, h http.Handler) {
+func (m *Mux) Handle(p Pattern, h mchain.Handler) {
 	m.router.add(p, h)
 }
 
@@ -32,6 +36,6 @@ func (m *Mux) Handle(p Pattern, h http.Handler) {
 HandleFunc adds a new route to the Mux. It is equivalent to calling Handle on a
 handler wrapped with http.HandlerFunc, and is provided only for convenience.
 */
-func (m *Mux) HandleFunc(p Pattern, h func(http.ResponseWriter, *http.Request)) {
-	m.Handle(p, http.HandlerFunc(h))
+func (m *Mux) HandleFunc(p Pattern, h func(http.ResponseWriter, *http.Request) error) {
+	m.Handle(p, mchain.HandlerFunc(h))
 }

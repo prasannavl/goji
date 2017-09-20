@@ -17,7 +17,9 @@ func (t testPattern) Match(r *http.Request) *http.Request {
 
 type testHandler struct{}
 
-func (t testHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {}
+func (t testHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) error {
+	return nil
+}
 
 func TestPattern(t *testing.T) {
 	t.Parallel()

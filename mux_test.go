@@ -1,20 +1,21 @@
-package goji
+package mroute
 
 import (
 	"context"
 	"net/http"
 	"testing"
 
-	"goji.io/internal"
+	"github.com/prasannavl/mroute/internal"
 )
 
 func TestMuxExistingPath(t *testing.T) {
 	m := NewMux()
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		if path := ctx.Value(internal.Path).(string); path != "/" {
 			t.Errorf("expected path=/, got %q", path)
 		}
+		return nil
 	}
 	m.HandleFunc(boolPattern(true), handler)
 	w, r := wr()
@@ -25,11 +26,12 @@ func TestMuxExistingPath(t *testing.T) {
 
 func TestSubMuxExistingPath(t *testing.T) {
 	m := SubMux()
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		if path := ctx.Value(internal.Path).(string); path != "/hello" {
 			t.Errorf("expected path=/hello, got %q", path)
 		}
+		return nil
 	}
 	m.HandleFunc(boolPattern(true), handler)
 	w, r := wr()

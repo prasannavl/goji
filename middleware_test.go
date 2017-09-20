@@ -1,8 +1,10 @@
-package goji
+package mroute
 
 import (
 	"net/http"
 	"testing"
+
+	"github.com/prasannavl/mchain"
 )
 
 func expectSequence(t *testing.T, ch chan string, seq ...string) {
@@ -18,24 +20,27 @@ func TestMiddleware(t *testing.T) {
 
 	m := NewMux()
 	ch := make(chan string, 10)
-	m.Use(func(h http.Handler) http.Handler {
-		fn := func(w http.ResponseWriter, r *http.Request) {
+	m.Use(func(h mchain.Handler) mchain.Handler {
+		fn := func(w http.ResponseWriter, r *http.Request) error {
 			ch <- "before one"
-			h.ServeHTTP(w, r)
+			err := h.ServeHTTP(w, r)
 			ch <- "after one"
+			return err
 		}
-		return http.HandlerFunc(fn)
+		return mchain.HandlerFunc(fn)
 	})
-	m.Use(func(h http.Handler) http.Handler {
-		fn := func(w http.ResponseWriter, r *http.Request) {
+	m.Use(func(h mchain.Handler) mchain.Handler {
+		fn := func(w http.ResponseWriter, r *http.Request) error {
 			ch <- "before two"
-			h.ServeHTTP(w, r)
+			err := h.ServeHTTP(w, r)
 			ch <- "after two"
+			return err
 		}
-		return http.HandlerFunc(fn)
+		return mchain.HandlerFunc(fn)
 	})
-	m.Handle(boolPattern(true), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	m.Handle(boolPattern(true), mchain.HandlerFunc(func(w http.ResponseWriter, r *http.Request) error {
 		ch <- "handler"
+		return nil
 	}))
 
 	m.ServeHTTP(wr())
@@ -43,14 +48,15 @@ func TestMiddleware(t *testing.T) {
 	expectSequence(t, ch, "before one", "before two", "handler", "after two", "after one")
 }
 
-func makeMiddleware(ch chan string, name string) func(http.Handler) http.Handler {
-	return func(h http.Handler) http.Handler {
-		fn := func(w http.ResponseWriter, r *http.Request) {
+func makeMiddleware(ch chan string, name string) mchain.Middleware {
+	return func(h mchain.Handler) mchain.Handler {
+		fn := func(w http.ResponseWriter, r *http.Request) error {
 			ch <- "before " + name
-			h.ServeHTTP(w, r)
+			err := h.ServeHTTP(w, r)
 			ch <- "after " + name
+			return err
 		}
-		return http.HandlerFunc(fn)
+		return mchain.HandlerFunc(fn)
 	}
 }
 
@@ -61,8 +67,9 @@ func TestMiddlewareReconfigure(t *testing.T) {
 	ch := make(chan string, 10)
 	m.Use(makeMiddleware(ch, "one"))
 	m.Use(makeMiddleware(ch, "two"))
-	m.Handle(boolPattern(true), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	m.Handle(boolPattern(true), mchain.HandlerFunc(func(w http.ResponseWriter, r *http.Request) error {
 		ch <- "handler"
+		return nil
 	}))
 
 	w, r := wr()
