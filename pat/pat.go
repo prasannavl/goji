@@ -170,7 +170,7 @@ func New(pat string) *Pattern {
 	return p
 }
 
-func newWithMethods(pat string, methods ...string) *Pattern {
+func NewWithMethods(pat string, methods ...string) *Pattern {
 	p := New(pat)
 
 	methodSet := make(map[string]struct{}, len(methods))
