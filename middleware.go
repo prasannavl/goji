@@ -17,18 +17,19 @@ For instance, given middleware A, B, and C, added in that order, mroute will
 behave similarly to this snippet:
 
 	augmentedHandler := A(B(C(yourHandler)))
-	augmentedHandler.ServeHTTP(w, r)
+	err := augmentedHandler.ServeHTTP(w, r)
 
 Assuming each of A, B, and C look something like this:
 
-	func A(inner http.Handler) http.Handler {
+	func A(mchain http.Handler) mchain.Handler {
 		log.Print("A: called")
-		mw := func(w http.ResponseWriter, r *http.Request) {
+		mw := func(w http.ResponseWriter, r *http.Request) error {
 			log.Print("A: before")
-			inner.ServeHTTP(w, r)
+			e := inner.ServeHTTP(w, r)
 			log.Print("A: after")
+			return e
 		}
-		return http.HandlerFunc(mw)
+		return mchain.HandlerFunc(mw)
 	}
 
 we'd expect to see the following in the log:
@@ -55,7 +56,7 @@ Patterns, or to view or modify the http.Handler that will be routed to.
 Middleware authors should read the documentation for the "middleware" subpackage
 for more information about how this is done.
 
-The http.Handler returned by the given middleware must be safe for concurrent
+The mchain.Handler returned by the given middleware must be safe for concurrent
 use by multiple goroutines. It is not safe to concurrently register middleware
 from multiple goroutines, or to register middleware concurrently with requests.
 */
@@ -64,7 +65,7 @@ func (m *Mux) Use(middleware mchain.Middleware) {
 	m.buildChain()
 }
 
-// Pre-compile a http.Handler for us to use during dispatch. Yes, this means
+// Pre-compile an mchain.Handler for us to use during dispatch. Yes, this means
 // that adding middleware is quadratic, but it (a) happens during configuration
 // time, not at "runtime", and (b) n should ~always be small.
 func (m *Mux) buildChain() {
